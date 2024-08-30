@@ -1,5 +1,6 @@
 export const userData = [
   {
+    id: 1,
     avatar: "/User1.png",
     messages: [
       {
@@ -39,6 +40,7 @@ export const userData = [
         message: "That is good to hear!",
       },
     ],
+    name: "AI Customer Support Chatbot",
   },
 ];
 

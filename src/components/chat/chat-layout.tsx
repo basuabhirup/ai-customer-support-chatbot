@@ -6,6 +6,7 @@ import { Chat } from "./chat";
 
 export function ChatLayout() {
   const [selectedUser] = useState({
+    id: 0,
     name: "AI Support Assistant",
     avatar: "/ai-avatar.png", // Add an appropriate avatar image for the AI
     messages: [],

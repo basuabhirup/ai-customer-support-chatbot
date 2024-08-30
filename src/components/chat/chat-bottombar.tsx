@@ -1,4 +1,4 @@
-import { FileImage, Paperclip, SendHorizontal, ThumbsUp } from "lucide-react";
+import { SendHorizontal, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { buttonVariants } from "../ui/button";
@@ -11,13 +11,13 @@ import { EmojiPicker } from "../emoji-picker";
 interface ChatBottombarProps {
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
+  isLoading: boolean;
 }
-
-export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 
 export default function ChatBottombar({
   sendMessage,
   isMobile,
+  isLoading,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -28,7 +28,7 @@ export default function ChatBottombar({
 
   const handleThumbsUp = () => {
     const newMessage: Message = {
-      id: message.length + 1,
+      id: Date.now(),
       name: loggedInUserData.name,
       avatar: loggedInUserData.avatar,
       message: "👍",
@@ -38,9 +38,9 @@ export default function ChatBottombar({
   };
 
   const handleSend = () => {
-    if (message.trim()) {
+    if (message.trim() && !isLoading) {
       const newMessage: Message = {
-        id: message.length + 1,
+        id: Date.now(),
         name: loggedInUserData.name,
         avatar: loggedInUserData.avatar,
         message: message.trim(),
@@ -68,80 +68,6 @@ export default function ChatBottombar({
 
   return (
     <div className="p-2 flex justify-between w-full items-center gap-2">
-      {/* <div className="flex">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Link
-              href="#"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "icon" }),
-                "h-9 w-9",
-                "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-              )}
-            >
-              <PlusCircle size={20} className="text-muted-foreground" />
-            </Link>
-          </PopoverTrigger>
-          <PopoverContent side="top" className="w-full p-2">
-            {message.trim() || isMobile ? (
-              <div className="flex gap-2">
-                <Link
-                  href="#"
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "icon" }),
-                    "h-9 w-9",
-                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                  )}
-                >
-                  <Mic size={20} className="text-muted-foreground" />
-                </Link>
-                {BottombarIcons.map((icon, index) => (
-                  <Link
-                    key={index}
-                    href="#"
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      "h-9 w-9",
-                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                    )}
-                  >
-                    <icon.icon size={20} className="text-muted-foreground" />
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <Link
-                href="#"
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "icon" }),
-                  "h-9 w-9",
-                  "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                )}
-              >
-                <Mic size={20} className="text-muted-foreground" />
-              </Link>
-            )}
-          </PopoverContent>
-        </Popover>
-        {!message.trim() && !isMobile && (
-          <div className="flex">
-            {BottombarIcons.map((icon, index) => (
-              <Link
-                key={index}
-                href="#"
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "icon" }),
-                  "h-9 w-9",
-                  "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                )}
-              >
-                <icon.icon size={20} className="text-muted-foreground" />
-              </Link>
-            ))}
-          </div>
-        )}
-      </div> */}
-
       <AnimatePresence initial={false}>
         <motion.div
           key="input"
@@ -166,9 +92,10 @@ export default function ChatBottombar({
             onChange={handleInputChange}
             name="message"
             placeholder="Aa"
-            className=" w-full border rounded-md flex items-center h-9 resize-none overflow-hidden bg-background"
+            className="w-full border rounded-md flex items-center h-9 resize-none overflow-hidden bg-background"
+            disabled={isLoading}
           ></Textarea>
-          <div className="absolute right-2 bottom-0.5  ">
+          <div className="absolute right-2 bottom-0.5">
             <EmojiPicker
               onChange={(value) => {
                 setMessage(message + value);
@@ -186,7 +113,8 @@ export default function ChatBottombar({
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
               "h-9 w-9",
-              "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0"
+              "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0",
+              isLoading && "opacity-50 cursor-not-allowed"
             )}
             onClick={handleSend}
           >
@@ -198,7 +126,8 @@ export default function ChatBottombar({
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
               "h-9 w-9",
-              "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0"
+              "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0",
+              isLoading && "opacity-50 cursor-not-allowed"
             )}
             onClick={handleThumbsUp}
           >

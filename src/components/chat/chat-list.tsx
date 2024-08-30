@@ -1,6 +1,6 @@
 import { Message, UserData } from "@/app/data";
 import { cn } from "@/lib/utils";
-import React, { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import ChatBottombar from "./chat-bottombar";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,17 +10,19 @@ interface ChatListProps {
   selectedUser: UserData;
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
+  isLoading: boolean;
 }
 
 export function ChatList({
   messages,
   selectedUser,
   sendMessage,
-  isMobile
+  isMobile,
+  isLoading,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
@@ -28,7 +30,7 @@ export function ChatList({
   }, [messages]);
 
   return (
-    <div className="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col">
+    <div className="w-full overflow-y-auto overflow-x-hidden h-full min-h-[250px] flex flex-col">
       <div
         ref={messagesContainerRef}
         className="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col"
@@ -69,7 +71,7 @@ export function ChatList({
                     />
                   </Avatar>
                 )}
-                <span className=" bg-accent p-3 rounded-md max-w-xs">
+                <span className="bg-accent p-3 rounded-md max-w-xs">
                   {message.message}
                 </span>
                 {message.name !== selectedUser.name && (
@@ -86,8 +88,17 @@ export function ChatList({
             </motion.div>
           ))}
         </AnimatePresence>
+        {isLoading && (
+          <div className="flex items-center justify-center p-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+        )}
       </div>
-      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile}/>
+      <ChatBottombar
+        sendMessage={sendMessage}
+        isMobile={isMobile}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
