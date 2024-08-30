@@ -1,12 +1,15 @@
 "use client";
 
 import { userData } from "@/app/data";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Chat } from "./chat";
-import { Fullscreen } from "lucide-react";
 
 export function ChatLayout() {
-  const [selectedUser] = React.useState(userData[0]);
+  const [selectedUser] = useState({
+    name: "AI Support Assistant",
+    avatar: "/ai-avatar.png", // Add an appropriate avatar image for the AI
+    messages: [],
+  });
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -15,7 +18,6 @@ export function ChatLayout() {
     };
     checkScreenWidth();
 
-    // Event listener for screen width changes
     window.addEventListener("resize", checkScreenWidth);
 
     return () => {
