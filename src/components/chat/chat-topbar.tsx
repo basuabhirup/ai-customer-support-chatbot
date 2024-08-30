@@ -31,7 +31,7 @@ export default function ChatTopbar({ selectedUser }: ChatTopbarProps) {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         {TopbarIcons.map((icon, index) => (
           <Link
             key={index}
@@ -45,7 +45,7 @@ export default function ChatTopbar({ selectedUser }: ChatTopbarProps) {
             <icon.icon size={20} className="text-muted-foreground" />
           </Link>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

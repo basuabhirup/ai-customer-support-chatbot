@@ -14,7 +14,7 @@ export function Chat({ messages, selectedUser, isMobile }: ChatProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async (newMessage: Message) => {
-    setMessages([...messagesState, newMessage]);
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setIsLoading(true);
 
     try {
@@ -34,27 +34,34 @@ export function Chat({ messages, selectedUser, isMobile }: ChatProps) {
       const decoder = new TextDecoder();
 
       if (reader) {
-        let aiResponse = "";
+        const aiMessage: Message = {
+          id: Date.now(),
+          name: selectedUser.name,
+          avatar: selectedUser.avatar,
+          message: "",
+        };
+
+        setMessages((prevMessages) => [...prevMessages, aiMessage]);
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          aiResponse += chunk;
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now(),
-              name: selectedUser.name,
-              avatar: selectedUser.avatar,
-              message: aiResponse,
-            },
-          ]);
+
+          setMessages((prevMessages) => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+            const updatedMessages = prevMessages.slice(0, -1);
+            return [
+              ...updatedMessages,
+              { ...lastMessage, message: lastMessage.message + chunk },
+            ];
+          });
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
+      setMessages((prevMessages) => [
+        ...prevMessages,
         {
           id: Date.now(),
           name: selectedUser.name,

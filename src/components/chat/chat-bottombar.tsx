@@ -27,14 +27,16 @@ export default function ChatBottombar({
   };
 
   const handleThumbsUp = () => {
-    const newMessage: Message = {
-      id: Date.now(),
-      name: loggedInUserData.name,
-      avatar: loggedInUserData.avatar,
-      message: "👍",
-    };
-    sendMessage(newMessage);
-    setMessage("");
+    if (!isLoading) {
+      const newMessage: Message = {
+        id: Date.now(),
+        name: loggedInUserData.name,
+        avatar: loggedInUserData.avatar,
+        message: "👍",
+      };
+      sendMessage(newMessage);
+      setMessage("");
+    }
   };
 
   const handleSend = () => {
